@@ -1,0 +1,241 @@
+
+---
+title: "Introduction to R with ChatGPT"
+author: "ChatGPT + Katie Ireland, Ph.D."
+output: html_document
+---
+
+# 1. Install R and RStudio
+
+**What is R?**
+
+R is a powerful programming language used specifically for data analysis, statistical computing, and creating visualizations. It's popular in data science because of its flexibility and large collection of packages.
+
+**Why use RStudio?**
+
+RStudio is an integrated development environment (IDE) that makes working with R much easier. It provides helpful tools like a script editor, a console for running code, and tabs for viewing data, plots, and files. Using RStudio makes organizing and running R code more manageable, especially for beginners.
+
+### Installing R and RStudio:
+
+1. **R**: Download and install R from [CRAN](https://cran.r-project.org/). R itself runs the code.
+2. **RStudio**: Download and install RStudio from [RStudio](https://posit.co/download/rstudio/). RStudio provides the interface that simplifies your interaction with R.
+
+Once you have both installed, open RStudio.
+
+# 2. Getting Familiar with the RStudio Interface
+
+When you first open RStudio, you’ll see four main panels:
+
+- **Console**: This is where you can directly run your R code and see immediate results. It's like a calculator where you input commands and see the output.
+- **Source/Editor**: Here, you can write and save your R scripts, which are files where your R code is stored for future use.
+- **Environment/History**: This panel keeps track of all the data and variables you've created, and it also shows the history of commands you've run.
+- **Plots/Packages/Help**: This panel is where you’ll see any plots you create, the R packages you have installed, and access documentation for help.
+
+**Why RStudio?**
+
+RStudio helps you keep everything organized. You can run code in the console and write and save scripts in the editor. It also makes debugging easier, so you can quickly fix errors.
+
+# 3. Basic R Operations
+
+Let’s start with some foundational R concepts.
+
+### a. R as a Calculator
+
+You can use R to do basic arithmetic operations, just like a calculator. Try these commands in the console:
+
+```r
+2 + 2   # Addition
+5 * 3   # Multiplication
+10 / 2  # Division
+```
+
+### b. Assigning Variables
+
+A variable is like a container that holds data or a value. Think of it as a named storage box that you can use later.
+
+Example:
+
+```r
+x <- 5     # This assigns the value 5 to the variable x
+y <- 10    # y is assigned the value 10
+result <- x + y   # Now result contains the sum of x and y
+```
+Variables let you store values and reuse them in calculations or other code. For example, `result` will contain the value `15` in this case.   
+Excercise 3B: Create two variables z and c. Assign z the value of 15 and c the value of 7. Subtract c from z and store the result in a new variable called difference.   
+   
+
+### c. Data Types
+
+R handles different types of data:
+
+- **Numeric**: Numbers (e.g., `42`, `3.14`)
+- **Character**: Text (e.g., `"Hello World"`)
+- **Logical**: TRUE or FALSE values, which are useful in conditions.
+
+Example:
+
+```r
+num <- 5.5   # Numeric value
+text <- "R is great!"   # Character string
+is_true <- TRUE   # Logical value
+```
+
+# 4. Working with Data Structures
+
+In R, data can be stored in different ways. Let’s explore the two most common ones:
+
+### a. Vectors
+
+A vector is a simple data structure that stores a sequence of data. All elements in a vector must be of the same type.
+
+```r
+numbers <- c(1, 2, 3, 4, 5)  # Create a numeric vector
+```
+
+### b. Data Frames
+
+A data frame is like a table where each column can contain different types of data (numbers, text, etc.). Data frames are particularly useful for storing datasets.
+
+We’ll use a **University of Georgia sports history dataset** as an example of a data frame. You can download it and load it into RStudio.
+
+```r
+# Load necessary libraries
+library(tidyverse)
+
+# Read the dataset
+uga_sports_history <- read_csv("uga_sports_history.csv")
+
+# View the first few rows of the dataset
+head(uga_sports_history)
+```
+
+# 5. Basic Data Manipulation with `dplyr`
+
+`dplyr` is a part of the `tidyverse` package and makes it easy to manipulate and transform data. To use it, you need to install the package and load it.
+
+```r
+install.packages("dplyr")
+library(dplyr)
+```
+
+### a. Filter Data
+
+Filtering lets you pick specific rows from your dataset based on a condition. For example, to see only the football games:
+
+```r
+football_games <- uga_sports_history %>%
+    filter(Sport == "Football")
+```
+Exercise 5a:   
+Filter the data to show only the games where UGA won (i.e., Outcome == "Win").
+
+### b. Select Specific Columns
+
+You can also choose specific columns from the dataset. For example, if you want to view only the `Date`, `Sport`, and `Outcome`:
+
+```r
+selected_data <- uga_sports_history %>%
+    select(Date, Sport, Outcome)
+```
+Exercise 5b: Select the columns Date, UGA_Score, and Opponent_Score from the dataset.   
+
+### c. Mutate Data
+
+Use `mutate()` to create new columns. For instance, if you want to calculate the score difference for each game:
+
+```r
+uga_sports_history <- uga_sports_history %>%
+    mutate(score_diff = UGA_Score - Opponent_Score)
+```
+
+Exercise 5c:
+Create a new column called win_margin that shows the absolute value of the score_diff (use abs() function).   Hint: use mutate with the formula (win_margin= abs(score_diff))
+   
+
+### d. Arrange Data
+
+You can sort the data using `arrange()`. For example, to sort the dataset by date:
+
+```r
+sorted_data <- uga_sports_history %>%
+    arrange(Date)
+```
+Exercise 5D:
+Sort the dataset by UGA_Score in descending order.   
+Hint: use arrange and (desc(UGA_Score))   
+
+### e. Summarize Data
+
+The `summarise()` function helps you calculate summary statistics. Let’s calculate the average UGA and opponent scores:
+
+```r
+summary_stats <- uga_sports_history %>%
+    summarise(
+        avg_uga_score = mean(UGA_Score),
+        avg_opponent_score = mean(Opponent_Score)
+    )
+```
+
+# 6. Visualizing Data with `ggplot2`
+
+Data visualization is key in data science. The `ggplot2` package, part of `tidyverse`, helps you create various types of plots.
+
+```r
+install.packages("ggplot2")
+library(ggplot2)
+```
+
+### a. Plotting Win Rate by Sport
+
+We can visualize the win rate for each sport using a bar plot:
+
+```r
+sports_summary <- uga_sports_history %>%
+    group_by(Sport) %>%
+    summarise(
+        total_games = n(),
+        win_rate = mean(Outcome == "Win")
+    )
+
+ggplot(sports_summary, aes(x = Sport, y = win_rate)) +
+    geom_col(fill = "blue") +
+    labs(title = "Win Rate by Sport", x = "Sport", y = "Win Rate") +
+    theme_minimal()
+```
+
+### b. Plotting Performance Over Time
+
+You can also analyze how UGA’s performance has changed over time:
+
+```r
+uga_sports_history <- uga_sports_history %>%
+    mutate(Year = lubridate::year(Date))
+
+performance_by_year <- uga_sports_history %>%
+    group_by(Year) %>%
+    summarise(avg_score_diff = mean(score_diff))
+
+ggplot(performance_by_year, aes(x = Year, y = avg_score_diff)) +
+    geom_line(color = "red") +
+    geom_point() +
+    labs(title = "UGA Sports Performance Over Time", x = "Year", y = "Average Score Difference") +
+    theme_minimal()
+```
+
+# 7. Reading and Writing Data
+
+You can read datasets (like the one we used) from CSV files and also write data back to CSV files after processing it.
+
+### Reading Data:
+
+```r
+uga_sports_history <- read_csv("uga_sports_history.csv")
+```
+
+### Writing Data:
+
+If you want to save your modified dataset, you can write it to a new CSV file:
+
+```r
+write_csv(uga_sports_history, "uga_sports_history_modified.csv")
+```
